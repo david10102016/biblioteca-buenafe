@@ -615,8 +615,9 @@ function renderGrid() {
     return;
   }
 
-  grid.innerHTML = filtradas.map(m => `
-    <div class="card ${m.totalRecursos === 0 ? 'card-vacia' : ''}" onclick="${m.totalRecursos > 0 ? 'abrirDetalle('+JSON.stringify(JSON.stringify(m))+')' : ''}">
+  window._materias = filtradas;
+  grid.innerHTML = filtradas.map((m, i) => `
+    <div class="card ${m.totalRecursos === 0 ? 'card-vacia' : ''}" onclick="${m.totalRecursos > 0 ? 'abrirDetalle('+i+')' : ''}">
       <div class="card-header">
         <span class="card-materia">${m.materia}</span>
         <span class="nivel-badge nivel-${m.nivel.toLowerCase()}">${m.nivel}</span>
@@ -629,7 +630,7 @@ function renderGrid() {
         <div class="card-recursos">
           ${m.totalRecursos > 0
             ? `<div class="recursos-count"><strong>${m.totalRecursos}</strong>${m.totalRecursos === 1 ? 'recurso' : 'recursos'}</div>
-               <div class="card-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>`
+               <div class="card-arrow"><span style="font-size:12px;font-weight:700;color:white;margin-right:4px;">VER</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>`
             : `<span class="preparacion">En preparación...</span>`
           }
         </div>
@@ -683,8 +684,8 @@ function actualizarFiltrosCurso() {
 }
 
 // ── DETALLE ───────────────────────────────────────────────────
-async function abrirDetalle(mStr) {
-  const m = JSON.parse(mStr);
+async function abrirDetalle(idx) {
+  const m = window._materias[idx];
   materiaActual = m;
   detalleCurso = '';
   detalleParalelo = '';
