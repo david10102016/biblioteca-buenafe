@@ -1184,6 +1184,7 @@ function authData() {
 async function api(data) {
   const res = await fetch(API, {
     method: 'POST',
+    headers: {'Content-Type': 'text/plain'},
     body: JSON.stringify(data)
   });
   return res.json();
