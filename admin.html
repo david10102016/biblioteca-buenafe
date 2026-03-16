@@ -879,7 +879,7 @@ function iniciarPanel() {
       <button class="tab activo" onclick="cambiarTab('admin-prof')">Materias</button>
       <button class="tab" onclick="cambiarTab('admin-rec')">Recursos</button>
       <button class="tab" onclick="cambiarTab('perfil')">Perfil</button>`;
-    cambiarTab('admin-prof');
+    cambiarTab('admin-prof', document.querySelector('.tab.activo'));
     cargarTodo();
   } else {
     cargarMisRecursos();
@@ -896,11 +896,12 @@ function cerrarSesion() {
 }
 
 // ── TABS ──────────────────────────────────────────────────────
-function cambiarTab(nombre) {
+function cambiarTab(nombre, btn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('activo'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('activo'));
   document.getElementById('tab-' + nombre).classList.add('activo');
-  event.target.classList.add('activo');
+  const target = btn || (typeof event !== 'undefined' && event.target);
+  if (target) target.classList.add('activo');
 }
 
 // ── MIS RECURSOS ──────────────────────────────────────────────
@@ -998,7 +999,7 @@ async function guardarRecurso() {
     if (res.ok) {
       toast('Recurso guardado ✓', 'ok');
       limpiarFormulario();
-      cambiarTab('mis-recursos');
+      cambiarTab('mis-recursos', document.querySelector('.tab.activo'));
       cargarMisRecursos();
     } else {
       toast(res.mensaje, 'err');
