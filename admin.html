@@ -872,16 +872,22 @@ function iniciarPanel() {
       cursos.map(c => `<option value="${c}">${c}</option>`).join('');
   });
 
-  // Tabs admin
+  // Tabs según rol
+  const tabs = document.getElementById('tabs-bar');
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('activo'));
   if (sesion.rol === 'admin') {
-    const tabs = document.getElementById('tabs-bar');
     tabs.innerHTML = `
-      <button class="tab activo" onclick="cambiarTab('admin-prof')">Materias</button>
-      <button class="tab" onclick="cambiarTab('admin-rec')">Recursos</button>
-      <button class="tab" onclick="cambiarTab('perfil')">Perfil</button>`;
-    cambiarTab('admin-prof', document.querySelector('.tab.activo'));
+      <button class="tab activo" onclick="cambiarTab('admin-prof', this)">Materias</button>
+      <button class="tab" onclick="cambiarTab('admin-rec', this)">Recursos</button>
+      <button class="tab" onclick="cambiarTab('perfil', this)">Perfil</button>`;
+    document.getElementById('tab-admin-prof').classList.add('activo');
     cargarTodo();
   } else {
+    tabs.innerHTML = `
+      <button class="tab activo" onclick="cambiarTab('mis-recursos', this)">Mis recursos</button>
+      <button class="tab" onclick="cambiarTab('agregar', this)">Agregar</button>
+      <button class="tab" onclick="cambiarTab('perfil', this)">Mi perfil</button>`;
+    document.getElementById('tab-mis-recursos').classList.add('activo');
     cargarMisRecursos();
   }
 }
