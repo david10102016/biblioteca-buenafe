@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Biblioteca Virtual - Unidad Educativa Técnica Humanística Buena Fe">
+<title>Biblioteca Virtual — U.E. Buena Fe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul:      #1a3a5c;
+    --azul2:     #24527a;
+    --azul3:     #2e6da4;
+    --dorado:    #c9963a;
+    --dorado2:   #e8b04a;
+    --claro:     #f4f7fb;
+    --blanco:    #ffffff;
+    --texto:     #1a1a2e;
+    --texto2:    #4a5568;
+    --texto3:    #718096;
+    --borde:     #e2e8f0;
+    --sombra:    0 2px 12px rgba(26,58,92,0.10);
+    --radio:     14px;
+    --radio2:    10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+  body { font-family: 'Outfit', sans-serif; background: var(--claro); color: var(--texto); min-height: 100vh; }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--azul) 0%, var(--azul2) 60%, var(--azul3) 100%);
+    padding: 20px 16px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(201,150,58,0.12);
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: 20px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+  .logo {
+    width: 46px; height: 46px;
+    background: var(--dorado);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .header-titles h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .header-titles p {
+    font-size: 11px;
+    color: rgba(255,255,255,0.70);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+  .admin-link {
+    margin-left: auto;
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.20);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-family: 'Outfit', sans-serif;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  /* BUSCADOR */
+  .search-box {
+    position: relative;
+    z-index: 1;
+  }
+  .search-box input {
+    width: 100%;
+    padding: 13px 16px 13px 44px;
+    border-radius: 12px;
+    border: none;
+    font-size: 15px;
+    font-family: 'Outfit', sans-serif;
+    background: rgba(255,255,255,0.95);
+    color: var(--texto);
+    outline: none;
+  }
+  .search-icon {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    width: 18px; height: 18px;
+    opacity: 0.45;
+  }
+
+  /* FILTROS */
+  .filtros-wrap {
+    background: var(--blanco);
+    border-bottom: 1px solid var(--borde);
+    padding: 14px 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .filtros-wrap::-webkit-scrollbar { display: none; }
+  .filtros-row {
+    display: flex;
+    gap: 8px;
+    min-width: max-content;
+  }
+  .filtro-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--borde);
+    background: var(--blanco);
+    color: var(--texto2);
+    font-size: 13px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.18s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .filtro-btn.activo {
+    background: var(--azul);
+    border-color: var(--azul);
+    color: #fff;
+  }
+  .filtro-sep {
+    width: 1px;
+    background: var(--borde);
+    margin: 4px 0;
+    flex-shrink: 0;
+  }
+
+  /* FILTROS SECUNDARIOS */
+  .filtros-sec {
+    background: var(--claro);
+    padding: 12px 16px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    border-bottom: 1px solid var(--borde);
+  }
+  .filtros-sec::-webkit-scrollbar { display: none; }
+  .filtro-sec-btn {
+    padding: 6px 14px;
+    border-radius: 16px;
+    border: 1.5px solid var(--borde);
+    background: var(--blanco);
+    color: var(--texto2);
+    font-size: 12px;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.18s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .filtro-sec-btn.activo {
+    background: var(--dorado);
+    border-color: var(--dorado);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* RESULTADOS HEADER */
+  .resultados-header {
+    padding: 14px 16px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .resultados-header span {
+    font-size: 13px;
+    color: var(--texto3);
+  }
+  .resultados-header strong {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--texto);
+  }
+
+  /* GRID DE MATERIAS */
+  .grid {
+    padding: 8px 16px 80px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  @media (min-width: 480px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
+  @media (min-width: 1024px) { .grid { grid-template-columns: 1fr 1fr 1fr 1fr; padding: 12px 24px 80px; } }
+
+  /* CARD MATERIA */
+  .card {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    border: 1px solid var(--borde);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: var(--sombra);
+  }
+  .card:active { transform: scale(0.98); }
+  .card-header {
+    padding: 16px 16px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .nivel-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 4px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .nivel-primaria  { background: #e8f5e9; color: #2e7d32; }
+  .nivel-secundaria { background: #e3f2fd; color: #1565c0; }
+  .card-materia {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--texto);
+    line-height: 1.3;
+    flex: 1;
+  }
+  .card-body {
+    padding: 0 16px 16px;
+    border-top: 1px solid var(--borde);
+    margin-top: 4px;
+    padding-top: 12px;
+  }
+  .card-profesor {
+    font-size: 13px;
+    color: var(--texto2);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-profesor svg { flex-shrink: 0; opacity: 0.5; }
+  .card-recursos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .recursos-count {
+    font-size: 13px;
+    color: var(--texto3);
+  }
+  .recursos-count strong {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--azul);
+    margin-right: 4px;
+  }
+  .card-arrow {
+    width: 32px; height: 32px;
+    background: var(--azul);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-arrow svg { color: white; }
+
+  /* CARD VACÍA */
+  .card-vacia .card-arrow { background: var(--borde); }
+  .card-vacia .preparacion {
+    font-size: 12px;
+    color: var(--texto3);
+    font-style: italic;
+  }
+
+  /* VISTA DETALLE */
+  #detalle {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--claro);
+    z-index: 100;
+    overflow-y: auto;
+  }
+  .detalle-header {
+    background: linear-gradient(135deg, var(--azul) 0%, var(--azul2) 100%);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .btn-volver {
+    width: 38px; height: 38px;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .detalle-header-info h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .detalle-header-info p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.70);
+    margin-top: 2px;
+  }
+
+  /* FILTROS DETALLE */
+  .detalle-filtros {
+    background: var(--blanco);
+    border-bottom: 1px solid var(--borde);
+    padding: 12px 16px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .detalle-filtros::-webkit-scrollbar { display: none; }
+
+  /* RECURSOS */
+  .recursos-lista {
+    padding: 12px 16px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .recurso-card {
+    background: var(--blanco);
+    border-radius: var(--radio2);
+    border: 1px solid var(--borde);
+    padding: 14px;
+    box-shadow: 0 1px 6px rgba(26,58,92,0.07);
+  }
+  .recurso-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .recurso-titulo {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--texto);
+    line-height: 1.3;
+    flex: 1;
+  }
+  .tipo-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .tipo-video   { background: #fce4ec; color: #880e4f; }
+  .tipo-pdf     { background: #fff3e0; color: #e65100; }
+  .tipo-web     { background: #e8eaf6; color: #283593; }
+  .tipo-doc     { background: #e0f2f1; color: #004d40; }
+  .tipo-form    { background: #f3e5f5; color: #4a148c; }
+  .tipo-otro    { background: #f5f5f5; color: #424242; }
+
+  .recurso-meta {
+    font-size: 12px;
+    color: var(--texto3);
+    margin-bottom: 8px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .recurso-meta span { display: flex; align-items: center; gap: 3px; }
+  .recurso-consigna {
+    font-size: 13px;
+    color: var(--texto2);
+    line-height: 1.5;
+    background: var(--claro);
+    border-left: 3px solid var(--dorado);
+    padding: 8px 12px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 10px;
+    font-family: 'Crimson Pro', serif;
+    font-size: 14px;
+  }
+  .btn-recurso {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px;
+    background: var(--azul);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.18s;
+  }
+  .btn-recurso:active { background: var(--azul2); }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--texto3);
+  }
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty h3 { font-size: 16px; color: var(--texto2); margin-bottom: 6px; }
+  .empty p { font-size: 14px; }
+
+  /* LOADING */
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    gap: 12px;
+    color: var(--texto3);
+    font-size: 14px;
+  }
+  .spinner {
+    width: 32px; height: 32px;
+    border: 3px solid var(--borde);
+    border-top-color: var(--azul);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--texto);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    z-index: 999;
+    transition: transform 0.3s;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <div class="logo">📚</div>
+    <div class="header-titles">
+      <h1>Biblioteca Virtual</h1>
+      <p>U.E. Técnica Humanística Buena Fe</p>
+    </div>
+    <a href="admin.html" class="admin-link">Docentes</a>
+  </div>
+  <div class="search-box">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input type="text" id="buscador" placeholder="Buscar materia o recurso..." autocomplete="off">
+  </div>
+</header>
+
+<!-- FILTROS NIVEL -->
+<div class="filtros-wrap">
+  <div class="filtros-row" id="filtros-nivel">
+    <button class="filtro-btn activo" data-nivel="">Todos</button>
+    <div class="filtro-sep"></div>
+    <button class="filtro-btn" data-nivel="Primaria">Primaria</button>
+    <button class="filtro-btn" data-nivel="Secundaria">Secundaria</button>
+  </div>
+</div>
+
+<!-- FILTROS CURSO + PARALELO -->
+<div class="filtros-sec" id="filtros-curso" style="display:none;">
+  <button class="filtro-sec-btn activo" data-curso="">Todos los cursos</button>
+</div>
+<div class="filtros-sec" id="filtros-paralelo" style="display:none;">
+  <button class="filtro-sec-btn activo" data-paralelo="">A · B · C</button>
+  <button class="filtro-sec-btn" data-paralelo="A">Paralelo A</button>
+  <button class="filtro-sec-btn" data-paralelo="B">Paralelo B</button>
+  <button class="filtro-sec-btn" data-paralelo="C">Paralelo C</button>
+</div>
+
+<!-- RESULTADOS -->
+<div class="resultados-header">
+  <strong id="titulo-seccion">Todas las materias</strong>
+  <span id="contador-materias"></span>
+</div>
+
+<!-- GRID -->
+<div class="grid" id="grid-materias">
+  <div class="loading"><div class="spinner"></div>Cargando materias...</div>
+</div>
+
+<!-- VISTA DETALLE -->
+<div id="detalle">
+  <div class="detalle-header">
+    <button class="btn-volver" onclick="cerrarDetalle()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    <div class="detalle-header-info">
+      <h2 id="detalle-materia"></h2>
+      <p id="detalle-meta"></p>
+    </div>
+  </div>
+
+  <!-- FILTROS DETALLE -->
+  <div class="detalle-filtros" id="detalle-filtros-curso"></div>
+  <div class="detalle-filtros" id="detalle-filtros-paralelo"></div>
+
+  <div class="recursos-lista" id="recursos-lista">
+    <div class="loading"><div class="spinner"></div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbzx3zKka7cyYHy_EBNB-WXXZOfqiIQHlQ4Zv54SEVUbtc0lZun5Rc77RSXf3MqQ5A/exec';
+
+let materias = [];
+let recursos = [];
+let filtroNivel = '';
+let filtroCurso = '';
+let filtroParalelo = '';
+let busqueda = '';
+let materiaActual = null;
+let detalleCurso = '';
+let detalleParalelo = '';
+
+// ── INICIALIZACIÓN ────────────────────────────────────────────
+async function init() {
+  await cargarMaterias();
+  setupFiltros();
+  document.getElementById('buscador').addEventListener('input', e => {
+    busqueda = e.target.value.toLowerCase();
+    renderGrid();
+  });
+}
+
+async function cargarMaterias() {
+  try {
+    const res  = await fetch(API + '?accion=obtenerMaterias');
+    const data = await res.json();
+    if (data.ok) {
+      materias = data.materias;
+      renderGrid();
+    }
+  } catch(e) {
+    document.getElementById('grid-materias').innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><h3>Error de conexión</h3><p>Verifica tu conexión a internet</p></div>';
+  }
+}
+
+// ── RENDER GRID ───────────────────────────────────────────────
+function renderGrid() {
+  let filtradas = materias.filter(m => {
+    if (filtroNivel && m.nivel !== filtroNivel) return false;
+    if (busqueda && !m.materia.toLowerCase().includes(busqueda) && !m.nombre.toLowerCase().includes(busqueda)) return false;
+    return true;
+  });
+
+  const grid = document.getElementById('grid-materias');
+  document.getElementById('contador-materias').textContent = filtradas.length + ' materias';
+
+  if (!filtradas.length) {
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div><h3>Sin resultados</h3><p>Prueba con otro filtro</p></div>';
+    return;
+  }
+
+  grid.innerHTML = filtradas.map(m => `
+    <div class="card ${m.totalRecursos === 0 ? 'card-vacia' : ''}" onclick="${m.totalRecursos > 0 ? 'abrirDetalle('+JSON.stringify(JSON.stringify(m))+')' : ''}">
+      <div class="card-header">
+        <span class="card-materia">${m.materia}</span>
+        <span class="nivel-badge nivel-${m.nivel.toLowerCase()}">${m.nivel}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-profesor">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          ${m.nombre || 'Sin asignar'}
+        </div>
+        <div class="card-recursos">
+          ${m.totalRecursos > 0
+            ? `<div class="recursos-count"><strong>${m.totalRecursos}</strong>${m.totalRecursos === 1 ? 'recurso' : 'recursos'}</div>
+               <div class="card-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>`
+            : `<span class="preparacion">En preparación...</span>`
+          }
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── FILTROS NIVEL ─────────────────────────────────────────────
+function setupFiltros() {
+  document.querySelectorAll('#filtros-nivel .filtro-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#filtros-nivel .filtro-btn').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+      filtroNivel = btn.dataset.nivel;
+      actualizarFiltrosCurso();
+      renderGrid();
+    });
+  });
+  document.querySelectorAll('#filtros-paralelo .filtro-sec-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#filtros-paralelo .filtro-sec-btn').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+      filtroParalelo = btn.dataset.paralelo;
+      renderGrid();
+    });
+  });
+}
+
+function actualizarFiltrosCurso() {
+  const wrap = document.getElementById('filtros-curso');
+  const wrapP = document.getElementById('filtros-paralelo');
+  if (!filtroNivel) { wrap.style.display = 'none'; wrapP.style.display = 'none'; return; }
+
+  const cursos = filtroNivel === 'Primaria'
+    ? ['1ro','2do','3ro','4to','5to']
+    : ['1ro','2do','3ro','4to','5to','6to'];
+
+  wrap.style.display = 'flex';
+  wrapP.style.display = 'flex';
+  wrap.innerHTML = `<button class="filtro-sec-btn activo" data-curso="">Todos</button>` +
+    cursos.map(c => `<button class="filtro-sec-btn" data-curso="${c}">${c}</button>`).join('');
+
+  wrap.querySelectorAll('.filtro-sec-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      wrap.querySelectorAll('.filtro-sec-btn').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+      filtroCurso = btn.dataset.curso;
+    });
+  });
+}
+
+// ── DETALLE ───────────────────────────────────────────────────
+async function abrirDetalle(mStr) {
+  const m = JSON.parse(mStr);
+  materiaActual = m;
+  detalleCurso = '';
+  detalleParalelo = '';
+
+  document.getElementById('detalle-materia').textContent = m.materia;
+  document.getElementById('detalle-meta').textContent = m.nivel + ' · Prof. ' + (m.nombre || 'Sin asignar');
+  document.getElementById('detalle').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+
+  const cursos = m.nivel === 'Primaria'
+    ? ['1ro','2do','3ro','4to','5to']
+    : ['1ro','2do','3ro','4to','5to','6to'];
+
+  const fc = document.getElementById('detalle-filtros-curso');
+  fc.innerHTML = `<button class="filtro-sec-btn activo" data-c="">Todos los cursos</button>` +
+    cursos.map(c => `<button class="filtro-sec-btn" data-c="${c}">${c}</button>`).join('');
+  fc.querySelectorAll('.filtro-sec-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      fc.querySelectorAll('.filtro-sec-btn').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+      detalleCurso = btn.dataset.c;
+      renderRecursos();
+    });
+  });
+
+  const fp = document.getElementById('detalle-filtros-paralelo');
+  fp.innerHTML = `<button class="filtro-sec-btn activo" data-p="">A · B · C</button>
+    <button class="filtro-sec-btn" data-p="A">Paralelo A</button>
+    <button class="filtro-sec-btn" data-p="B">Paralelo B</button>
+    <button class="filtro-sec-btn" data-p="C">Paralelo C</button>`;
+  fp.querySelectorAll('.filtro-sec-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      fp.querySelectorAll('.filtro-sec-btn').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+      detalleParalelo = btn.dataset.p;
+      renderRecursos();
+    });
+  });
+
+  await cargarRecursos(m);
+}
+
+async function cargarRecursos(m) {
+  document.getElementById('recursos-lista').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  try {
+    let url = API + '?accion=obtenerRecursos&materia=' + encodeURIComponent(m.materia) + '&nivel=' + encodeURIComponent(m.nivel);
+    const res  = await fetch(url);
+    const data = await res.json();
+    if (data.ok) {
+      recursos = data.recursos;
+      renderRecursos();
+    }
+  } catch(e) {
+    document.getElementById('recursos-lista').innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><h3>Error de conexión</h3></div>';
+  }
+}
+
+function renderRecursos() {
+  let lista = recursos.filter(r => {
+    if (detalleCurso && r.curso !== detalleCurso && r.curso !== 'Todos') return false;
+    if (detalleParalelo && r.paralelo !== detalleParalelo && r.paralelo !== 'Todos') return false;
+    return true;
+  });
+
+  const cont = document.getElementById('recursos-lista');
+  if (!lista.length) {
+    cont.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><h3>Sin recursos</h3><p>No hay recursos para este filtro</p></div>';
+    return;
+  }
+
+  cont.innerHTML = lista.map(r => `
+    <div class="recurso-card">
+      <div class="recurso-top">
+        <span class="recurso-titulo">${r.titulo}</span>
+        <span class="tipo-badge tipo-${tipoCss(r.tipo)}">${r.tipo}</span>
+      </div>
+      <div class="recurso-meta">
+        <span>📚 ${r.curso === 'Todos' ? 'Todos los cursos' : r.curso}</span>
+        <span>👥 ${r.paralelo === 'Todos' ? 'Todos los paralelos' : 'Paralelo ' + r.paralelo}</span>
+        <span>📅 ${formatFecha(r.fecha)}</span>
+      </div>
+      ${r.consigna ? `<div class="recurso-consigna">${r.consigna}</div>` : ''}
+      <a href="${r.url}" target="_blank" rel="noopener" class="btn-recurso">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Abrir recurso
+      </a>
+    </div>
+  `).join('');
+}
+
+function cerrarDetalle() {
+  document.getElementById('detalle').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function tipoCss(tipo) {
+  if (!tipo) return 'otro';
+  const t = tipo.toLowerCase();
+  if (t.includes('video')) return 'video';
+  if (t.includes('pdf'))   return 'pdf';
+  if (t.includes('web') || t.includes('sitio')) return 'web';
+  if (t.includes('doc'))   return 'doc';
+  if (t.includes('form'))  return 'form';
+  return 'otro';
+}
+
+function formatFecha(f) {
+  if (!f) return '';
+  const d = new Date(f);
+  if (isNaN(d)) return '';
+  return d.toLocaleDateString('es-BO', {day:'numeric', month:'short'});
+}
+
+function mostrarToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+window.addEventListener('popstate', cerrarDetalle);
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Docente — Biblioteca Virtual Buena Fe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul:    #1a3a5c;
+    --azul2:   #24527a;
+    --azul3:   #2e6da4;
+    --dorado:  #c9963a;
+    --dorado2: #e8b04a;
+    --verde:   #2e7d32;
+    --rojo:    #c62828;
+    --claro:   #f4f7fb;
+    --blanco:  #ffffff;
+    --texto:   #1a1a2e;
+    --texto2:  #4a5568;
+    --texto3:  #718096;
+    --borde:   #e2e8f0;
+    --radio:   14px;
+    --radio2:  10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+  body { font-family: 'Outfit', sans-serif; background: var(--claro); color: var(--texto); min-height: 100vh; }
+
+  /* LOGIN */
+  #pantalla-login {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+    background: linear-gradient(160deg, var(--azul) 0%, var(--azul2) 50%, var(--azul3) 100%);
+  }
+  .login-card {
+    background: var(--blanco);
+    border-radius: 20px;
+    padding: 28px 24px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+  }
+  .login-logo {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .login-logo .icono {
+    font-size: 40px;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .login-logo h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--azul);
+  }
+  .login-logo p {
+    font-size: 12px;
+    color: var(--texto3);
+    margin-top: 2px;
+  }
+  .campo {
+    margin-bottom: 14px;
+  }
+  .campo label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--texto2);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .campo input {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1.5px solid var(--borde);
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: 'Outfit', sans-serif;
+    color: var(--texto);
+    background: var(--claro);
+    outline: none;
+    transition: border-color 0.18s;
+  }
+  .campo input:focus { border-color: var(--azul3); background: var(--blanco); }
+  .btn-login {
+    width: 100%;
+    padding: 14px;
+    background: var(--azul);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: background 0.18s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-login:active { background: var(--azul2); }
+  .error-msg {
+    font-size: 13px;
+    color: var(--rojo);
+    text-align: center;
+    margin-top: 10px;
+    min-height: 18px;
+  }
+
+  /* PANEL PRINCIPAL */
+  #pantalla-panel { display: none; }
+
+  /* HEADER PANEL */
+  .panel-header {
+    background: linear-gradient(135deg, var(--azul) 0%, var(--azul2) 100%);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .panel-header-info { flex: 1; }
+  .panel-header-info h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+  }
+  .panel-header-info p {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 1px;
+  }
+  .rol-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: var(--dorado);
+    color: var(--azul);
+  }
+  .btn-salir {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    border-radius: 8px;
+    padding: 7px 12px;
+    color: white;
+    font-size: 12px;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    background: var(--blanco);
+    border-bottom: 1px solid var(--borde);
+    padding: 0 16px;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 13px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--texto3);
+    border: none;
+    background: none;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2.5px solid transparent;
+    font-family: 'Outfit', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.18s, border-color 0.18s;
+  }
+  .tab.activo { color: var(--azul); border-bottom-color: var(--azul); }
+
+  /* CONTENIDO */
+  .tab-content { display: none; }
+  .tab-content.activo { display: block; }
+
+  /* SECCIÓN MI PERFIL */
+  .seccion { padding: 16px; }
+  .perfil-card {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    border: 1px solid var(--borde);
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+  .perfil-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--texto2);
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .nombre-actual {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--azul);
+    margin-bottom: 4px;
+  }
+  .nombre-hint {
+    font-size: 12px;
+    color: var(--texto3);
+    margin-bottom: 14px;
+  }
+  .credenciales-box {
+    background: var(--claro);
+    border-radius: 10px;
+    padding: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .cred-item label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--texto3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .cred-item span {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--texto);
+    font-family: monospace;
+  }
+
+  /* FORMULARIO RECURSO */
+  .form-card {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    border: 1px solid var(--borde);
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+  .form-card h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--texto);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .form-grupo {
+    margin-bottom: 14px;
+  }
+  .form-grupo label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--texto2);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .form-grupo input,
+  .form-grupo select,
+  .form-grupo textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--borde);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'Outfit', sans-serif;
+    color: var(--texto);
+    background: var(--claro);
+    outline: none;
+    transition: border-color 0.18s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .form-grupo input:focus,
+  .form-grupo select:focus,
+  .form-grupo textarea:focus { border-color: var(--azul3); background: var(--blanco); }
+  .form-grupo textarea { resize: vertical; min-height: 80px; }
+  .form-fila {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .tipo-btns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .tipo-btn {
+    padding: 10px 6px;
+    border: 1.5px solid var(--borde);
+    border-radius: 10px;
+    background: var(--claro);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--texto2);
+    cursor: pointer;
+    text-align: center;
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.18s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tipo-btn.activo {
+    background: var(--azul);
+    border-color: var(--azul);
+    color: white;
+  }
+
+  /* URL / PDF TOGGLE */
+  .fuente-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .fuente-tab {
+    padding: 10px;
+    border: 1.5px solid var(--borde);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--texto2);
+    cursor: pointer;
+    text-align: center;
+    font-family: 'Outfit', sans-serif;
+    background: var(--claro);
+    transition: all 0.18s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .fuente-tab.activo { background: var(--azul); border-color: var(--azul); color: white; }
+
+  /* BOTONES */
+  .btn-primario {
+    width: 100%;
+    padding: 14px;
+    background: var(--azul);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: background 0.18s;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-primario:active { background: var(--azul2); }
+  .btn-primario:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-secundario {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    color: var(--texto2);
+    border: 1.5px solid var(--borde);
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-dorado {
+    background: var(--dorado);
+    color: white;
+    border-color: var(--dorado);
+    width: auto;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-peligro {
+    background: #fff5f5;
+    color: var(--rojo);
+    border: 1.5px solid #fecaca;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+  }
+
+  /* LISTA RECURSOS */
+  .recursos-grid {
+    padding: 0 16px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .recurso-item {
+    background: var(--blanco);
+    border-radius: var(--radio2);
+    border: 1px solid var(--borde);
+    padding: 14px;
+  }
+  .recurso-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .recurso-item-titulo {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--texto);
+    flex: 1;
+    line-height: 1.3;
+  }
+  .recurso-item-acciones {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .recurso-item-meta {
+    font-size: 12px;
+    color: var(--texto3);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tipo-pill {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 10px;
+    background: #e3f2fd;
+    color: #1565c0;
+  }
+
+  /* ADMIN — LISTA PROFESORES */
+  .prof-item {
+    background: var(--blanco);
+    border-radius: var(--radio2);
+    border: 1px solid var(--borde);
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .prof-avatar {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--azul);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .prof-info { flex: 1; min-width: 0; }
+  .prof-nombre {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--texto);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .prof-materia {
+    font-size: 11px;
+    color: var(--texto3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .prof-cred {
+    font-size: 11px;
+    color: var(--texto3);
+    font-family: monospace;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.abierto { display: flex; }
+  .modal {
+    background: var(--blanco);
+    border-radius: 20px 20px 0 0;
+    padding: 20px 20px 40px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--texto);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--borde);
+  }
+
+  /* LOADING / TOAST */
+  .loading {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 48px 24px; gap: 12px;
+    color: var(--texto3); font-size: 14px;
+  }
+  .spinner {
+    width: 28px; height: 28px;
+    border: 3px solid var(--borde);
+    border-top-color: var(--azul);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--texto); color: white;
+    padding: 10px 20px; border-radius: 20px;
+    font-size: 13px; z-index: 999; transition: transform 0.3s; white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.ok   { background: var(--verde); }
+  .toast.err  { background: var(--rojo); }
+
+  /* EMPTY */
+  .empty { text-align: center; padding: 40px 24px; color: var(--texto3); }
+  .empty-icon { font-size: 40px; margin-bottom: 10px; }
+  .empty h3 { font-size: 15px; color: var(--texto2); margin-bottom: 6px; }
+
+  @media (min-width: 600px) {
+    .modal-overlay { align-items: center; }
+    .modal { border-radius: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="pantalla-login">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="icono">📚</span>
+      <h1>Panel Docente</h1>
+      <p>Biblioteca Virtual — U.E. Buena Fe</p>
+    </div>
+    <div class="campo">
+      <label>Usuario</label>
+      <input type="text" id="inp-usuario" placeholder="Ej: matematicapri1" autocomplete="username" autocapitalize="none">
+    </div>
+    <div class="campo">
+      <label>Contraseña</label>
+      <input type="password" id="inp-pass" placeholder="Tu contraseña" autocomplete="current-password">
+    </div>
+    <button class="btn-login" onclick="hacerLogin()">Ingresar</button>
+    <p class="error-msg" id="error-login"></p>
+  </div>
+</div>
+
+<!-- PANEL -->
+<div id="pantalla-panel">
+  <div class="panel-header">
+    <div class="panel-header-info">
+      <h2 id="ph-nombre">Cargando...</h2>
+      <p id="ph-materia"></p>
+    </div>
+    <span class="rol-badge" id="ph-rol">Docente</span>
+    <button class="btn-salir" onclick="cerrarSesion()">Salir</button>
+  </div>
+
+  <div class="tabs" id="tabs-bar">
+    <button class="tab activo" onclick="cambiarTab('mis-recursos')">Mis recursos</button>
+    <button class="tab" onclick="cambiarTab('agregar')">Agregar</button>
+    <button class="tab" onclick="cambiarTab('perfil')">Mi perfil</button>
+  </div>
+
+  <!-- TAB: MIS RECURSOS -->
+  <div class="tab-content activo" id="tab-mis-recursos">
+    <div class="seccion" style="padding-bottom:4px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:13px; color:var(--texto3);" id="contador-mis-recursos"></span>
+        <select id="filtro-orden" style="font-size:12px; padding:6px 10px; border:1px solid var(--borde); border-radius:8px; background:var(--blanco); font-family:'Outfit',sans-serif; color:var(--texto2);">
+          <option value="nuevo">Más recientes</option>
+          <option value="antiguo">Más antiguos</option>
+        </select>
+      </div>
+    </div>
+    <div class="recursos-grid" id="lista-mis-recursos">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- TAB: AGREGAR -->
+  <div class="tab-content" id="tab-agregar">
+    <div class="seccion">
+      <div class="form-card">
+        <h3>➕ Nuevo recurso</h3>
+
+        <div class="form-grupo">
+          <label>Título</label>
+          <input type="text" id="f-titulo" placeholder="Ej: Ejercicios de fracciones">
+        </div>
+
+        <div class="form-grupo">
+          <label>Tipo de recurso</label>
+          <div class="tipo-btns">
+            <button class="tipo-btn activo" data-tipo="Video" onclick="selTipo(this)">📹 Video</button>
+            <button class="tipo-btn" data-tipo="PDF" onclick="selTipo(this)">📄 PDF</button>
+            <button class="tipo-btn" data-tipo="Sitio web" onclick="selTipo(this)">🌐 Web</button>
+            <button class="tipo-btn" data-tipo="Documento" onclick="selTipo(this)">📝 Doc</button>
+            <button class="tipo-btn" data-tipo="Formulario" onclick="selTipo(this)">📋 Form</button>
+            <button class="tipo-btn" data-tipo="Otro" onclick="selTipo(this)">📦 Otro</button>
+          </div>
+        </div>
+
+        <div class="form-grupo">
+          <label>Fuente</label>
+          <div class="fuente-tabs">
+            <button class="fuente-tab activo" onclick="selFuente('link',this)">🔗 Pegar link</button>
+            <button class="fuente-tab" onclick="selFuente('pdf',this)">⬆️ Subir PDF</button>
+          </div>
+          <div id="fuente-link">
+            <input type="url" id="f-url" placeholder="https://...">
+          </div>
+          <div id="fuente-pdf" style="display:none;">
+            <input type="file" id="f-pdf" accept=".pdf" style="font-size:13px; padding:10px; border:1.5px dashed var(--borde); border-radius:10px; width:100%; background:var(--claro);">
+            <p style="font-size:11px; color:var(--texto3); margin-top:6px;">Máximo 10 MB. Se guarda en Google Drive automáticamente.</p>
+          </div>
+        </div>
+
+        <div class="form-fila">
+          <div class="form-grupo">
+            <label>Curso</label>
+            <select id="f-curso">
+              <option value="Todos">Todos</option>
+            </select>
+          </div>
+          <div class="form-grupo">
+            <label>Paralelo</label>
+            <select id="f-paralelo">
+              <option value="Todos">Todos</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grupo">
+          <label>Consigna <span style="font-weight:400; color:var(--texto3);">(opcional)</span></label>
+          <textarea id="f-consigna" placeholder="Ej: Resolver ejercicios del 1 al 10..."></textarea>
+        </div>
+
+        <button class="btn-primario" id="btn-guardar" onclick="guardarRecurso()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
+          Guardar recurso
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: PERFIL -->
+  <div class="tab-content" id="tab-perfil">
+    <div class="seccion">
+      <div class="perfil-card">
+        <h3>Nombre visible</h3>
+        <div class="nombre-actual" id="perfil-nombre-actual">—</div>
+        <p class="nombre-hint">Así te ven los estudiantes en la biblioteca</p>
+        <div class="form-grupo">
+          <input type="text" id="inp-nombre-nuevo" placeholder="Ej: Prof. David Flores">
+        </div>
+        <button class="btn-dorado" onclick="actualizarNombre()">Actualizar nombre</button>
+      </div>
+      <div class="perfil-card">
+        <h3>Mis credenciales</h3>
+        <div class="credenciales-box">
+          <div class="cred-item">
+            <label>Usuario</label>
+            <span id="cred-usuario">—</span>
+          </div>
+          <div class="cred-item">
+            <label>Contraseña</label>
+            <span id="cred-pass">—</span>
+          </div>
+          <div class="cred-item">
+            <label>Materia</label>
+            <span id="cred-materia" style="font-family:'Outfit',sans-serif; font-size:12px;">—</span>
+          </div>
+          <div class="cred-item">
+            <label>Nivel</label>
+            <span id="cred-nivel">—</span>
+          </div>
+        </div>
+      </div>
+      <a href="index.html" style="display:block; text-align:center; font-size:13px; color:var(--azul3); text-decoration:none; padding:8px;">
+        ← Ver la biblioteca pública
+      </a>
+    </div>
+  </div>
+
+  <!-- TAB: ADMIN — PROFESORES -->
+  <div class="tab-content" id="tab-admin-prof">
+    <div class="seccion">
+      <div class="form-card">
+        <h3>➕ Crear nueva materia</h3>
+        <div class="form-grupo">
+          <label>Nombre de la materia</label>
+          <input type="text" id="adm-materia" placeholder="Ej: Química">
+        </div>
+        <div class="form-grupo">
+          <label>Nivel</label>
+          <select id="adm-nivel">
+            <option value="Primaria">Primaria</option>
+            <option value="Secundaria">Secundaria</option>
+          </select>
+        </div>
+        <button class="btn-primario" onclick="crearMateria()">Crear materia</button>
+        <div id="nueva-cred" style="display:none; margin-top:14px; background:var(--claro); border-radius:10px; padding:14px;">
+          <p style="font-size:13px; font-weight:600; color:var(--verde); margin-bottom:8px;">✅ Materia creada</p>
+          <p style="font-size:13px; color:var(--texto2);">Usuario: <strong id="nc-usr"></strong></p>
+          <p style="font-size:13px; color:var(--texto2);">Contraseña: <strong id="nc-pass"></strong></p>
+          <p style="font-size:11px; color:var(--texto3); margin-top:6px;">Comparte estas credenciales con el profesor</p>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 16px; margin-bottom:8px; font-size:13px; color:var(--texto3);" id="contador-profs"></div>
+    <div class="recursos-grid" id="lista-profesores">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+
+  <!-- TAB: ADMIN — RECURSOS -->
+  <div class="tab-content" id="tab-admin-rec">
+    <div style="padding:12px 16px 4px; font-size:13px; color:var(--texto3);" id="contador-admin-rec"></div>
+    <div class="recursos-grid" id="lista-admin-recursos">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div class="modal-overlay" id="modal-editar">
+  <div class="modal">
+    <h3>Editar recurso</h3>
+    <input type="hidden" id="edit-id">
+    <div class="form-grupo">
+      <label>Título</label>
+      <input type="text" id="edit-titulo">
+    </div>
+    <div class="form-grupo">
+      <label>URL</label>
+      <input type="url" id="edit-url">
+    </div>
+    <div class="form-grupo">
+      <label>Tipo</label>
+      <select id="edit-tipo">
+        <option>Video</option><option>PDF</option><option>Sitio web</option>
+        <option>Documento</option><option>Formulario</option><option>Otro</option>
+      </select>
+    </div>
+    <div class="form-fila">
+      <div class="form-grupo">
+        <label>Curso</label>
+        <select id="edit-curso"></select>
+      </div>
+      <div class="form-grupo">
+        <label>Paralelo</label>
+        <select id="edit-paralelo">
+          <option value="Todos">Todos</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grupo">
+      <label>Consigna (opcional)</label>
+      <textarea id="edit-consigna"></textarea>
+    </div>
+    <button class="btn-primario" onclick="guardarEdicion()" style="margin-bottom:10px;">Guardar cambios</button>
+    <button class="btn-secundario" onclick="cerrarModal()">Cancelar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbzx3zKka7cyYHy_EBNB-WXXZOfqiIQHlQ4Zv54SEVUbtc0lZun5Rc77RSXf3MqQ5A/exec';
+
+let sesion = null;
+let tipoSeleccionado = 'Video';
+let fuenteSeleccionada = 'link';
+let misRecursos = [];
+let editandoId = null;
+
+// ── LOGIN ─────────────────────────────────────────────────────
+async function hacerLogin() {
+  const usuario   = document.getElementById('inp-usuario').value.trim();
+  const contrasena = document.getElementById('inp-pass').value.trim();
+  if (!usuario || !contrasena) { mostrarError('Completa usuario y contraseña'); return; }
+
+  document.querySelector('.btn-login').textContent = 'Ingresando...';
+  try {
+    const res  = await api({accion:'login', usuario, contrasena});
+    if (res.ok) {
+      sesion = {...res, usuario, contrasena};
+      iniciarPanel();
+    } else {
+      mostrarError(res.mensaje);
+    }
+  } catch(e) {
+    mostrarError('Error de conexión');
+  }
+  document.querySelector('.btn-login').textContent = 'Ingresar';
+}
+
+document.getElementById('inp-pass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') hacerLogin();
+});
+
+function iniciarPanel() {
+  document.getElementById('pantalla-login').style.display = 'none';
+  document.getElementById('pantalla-panel').style.display = 'block';
+
+  const nombre = sesion.nombre || (sesion.rol === 'admin' ? 'Administrador' : 'Docente');
+  document.getElementById('ph-nombre').textContent = nombre || 'Sin nombre asignado';
+  document.getElementById('ph-materia').textContent = sesion.rol === 'admin' ? 'Panel de administración' : sesion.materia + ' · ' + sesion.nivel;
+  document.getElementById('ph-rol').textContent = sesion.rol === 'admin' ? 'Admin' : 'Docente';
+
+  // Perfil
+  document.getElementById('perfil-nombre-actual').textContent = sesion.nombre || 'Sin nombre';
+  document.getElementById('inp-nombre-nuevo').value = sesion.nombre || '';
+  document.getElementById('cred-usuario').textContent  = sesion.usuario;
+  document.getElementById('cred-pass').textContent     = sesion.contrasena;
+  document.getElementById('cred-materia').textContent  = sesion.materia || '—';
+  document.getElementById('cred-nivel').textContent    = sesion.nivel || '—';
+
+  // Cursos según nivel
+  const cursos = sesion.nivel === 'Primaria'
+    ? ['1ro','2do','3ro','4to','5to']
+    : ['1ro','2do','3ro','4to','5to','6to'];
+  const selCurso = document.getElementById('f-curso');
+  const editCurso = document.getElementById('edit-curso');
+  [selCurso, editCurso].forEach(sel => {
+    sel.innerHTML = '<option value="Todos">Todos los cursos</option>' +
+      cursos.map(c => `<option value="${c}">${c}</option>`).join('');
+  });
+
+  // Tabs admin
+  if (sesion.rol === 'admin') {
+    const tabs = document.getElementById('tabs-bar');
+    tabs.innerHTML = `
+      <button class="tab activo" onclick="cambiarTab('admin-prof')">Materias</button>
+      <button class="tab" onclick="cambiarTab('admin-rec')">Recursos</button>
+      <button class="tab" onclick="cambiarTab('perfil')">Perfil</button>`;
+    cambiarTab('admin-prof');
+    cargarTodo();
+  } else {
+    cargarMisRecursos();
+  }
+}
+
+function cerrarSesion() {
+  sesion = null;
+  document.getElementById('pantalla-panel').style.display = 'none';
+  document.getElementById('pantalla-login').style.display = 'flex';
+  document.getElementById('inp-usuario').value = '';
+  document.getElementById('inp-pass').value = '';
+  document.getElementById('error-login').textContent = '';
+}
+
+// ── TABS ──────────────────────────────────────────────────────
+function cambiarTab(nombre) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('activo'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('activo'));
+  document.getElementById('tab-' + nombre).classList.add('activo');
+  event.target.classList.add('activo');
+}
+
+// ── MIS RECURSOS ──────────────────────────────────────────────
+async function cargarMisRecursos() {
+  try {
+    const res = await api({accion:'obtenerRecursos', ...authData()});
+    if (res.ok) {
+      misRecursos = res.recursos;
+      renderMisRecursos();
+    }
+  } catch(e) { toast('Error al cargar recursos', 'err'); }
+}
+
+function renderMisRecursos() {
+  const orden = document.getElementById('filtro-orden').value;
+  const lista = [...misRecursos].sort((a,b) =>
+    orden === 'nuevo' ? new Date(b.fecha)-new Date(a.fecha) : new Date(a.fecha)-new Date(b.fecha)
+  );
+  document.getElementById('contador-mis-recursos').textContent = lista.length + ' recursos';
+  const cont = document.getElementById('lista-mis-recursos');
+  if (!lista.length) {
+    cont.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><h3>Sin recursos aún</h3><p>Ve a "Agregar" para subir el primero</p></div>';
+    return;
+  }
+  cont.innerHTML = lista.map(r => `
+    <div class="recurso-item">
+      <div class="recurso-item-top">
+        <span class="recurso-item-titulo">${r.titulo}</span>
+        <div class="recurso-item-acciones">
+          <button class="btn-dorado" onclick="abrirEditar('${r.id}')">Editar</button>
+          <button class="btn-peligro" onclick="eliminarRecurso('${r.id}')">Borrar</button>
+        </div>
+      </div>
+      <div class="recurso-item-meta">
+        <span class="tipo-pill">${r.tipo}</span>
+        <span>📚 ${r.curso}</span>
+        <span>👥 ${r.paralelo}</span>
+        <span>📅 ${formatFecha(r.fecha)}</span>
+      </div>
+      ${r.consigna ? `<p style="font-size:12px; color:var(--texto2); margin-top:8px; font-style:italic;">${r.consigna}</p>` : ''}
+    </div>
+  `).join('');
+}
+
+document.getElementById('filtro-orden').addEventListener('change', renderMisRecursos);
+
+// ── AGREGAR RECURSO ───────────────────────────────────────────
+function selTipo(btn) {
+  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('activo'));
+  btn.classList.add('activo');
+  tipoSeleccionado = btn.dataset.tipo;
+}
+
+function selFuente(tipo, btn) {
+  fuenteSeleccionada = tipo;
+  document.querySelectorAll('.fuente-tab').forEach(b => b.classList.remove('activo'));
+  btn.classList.add('activo');
+  document.getElementById('fuente-link').style.display = tipo === 'link' ? 'block' : 'none';
+  document.getElementById('fuente-pdf').style.display  = tipo === 'pdf'  ? 'block' : 'none';
+}
+
+async function guardarRecurso() {
+  const titulo = document.getElementById('f-titulo').value.trim();
+  const curso  = document.getElementById('f-curso').value;
+  const paralelo = document.getElementById('f-paralelo').value;
+  const consigna = document.getElementById('f-consigna').value.trim();
+  let url = '';
+
+  if (!titulo) { toast('Escribe un título', 'err'); return; }
+
+  const btn = document.getElementById('btn-guardar');
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
+
+  if (fuenteSeleccionada === 'pdf') {
+    const archivo = document.getElementById('f-pdf').files[0];
+    if (!archivo) { toast('Selecciona un PDF', 'err'); btn.disabled = false; btn.textContent = 'Guardar recurso'; return; }
+    if (archivo.size > 10 * 1024 * 1024) { toast('El PDF supera 10 MB', 'err'); btn.disabled = false; btn.textContent = 'Guardar recurso'; return; }
+    btn.textContent = 'Subiendo PDF...';
+    const base64 = await leerBase64(archivo);
+    const upRes  = await api({accion:'subirPDF', base64, nombre:archivo.name, ...authData()});
+    if (!upRes.ok) { toast('Error al subir PDF: ' + upRes.mensaje, 'err'); btn.disabled = false; btn.textContent = 'Guardar recurso'; return; }
+    url = upRes.url;
+  } else {
+    url = document.getElementById('f-url').value.trim();
+    if (!url) { toast('Ingresa un link', 'err'); btn.disabled = false; btn.textContent = 'Guardar recurso'; return; }
+  }
+
+  try {
+    const res = await api({
+      accion:'agregarRecurso', titulo, consigna, url,
+      tipo:tipoSeleccionado, materia:sesion.materia, nivel:sesion.nivel,
+      curso, paralelo, ...authData()
+    });
+    if (res.ok) {
+      toast('Recurso guardado ✓', 'ok');
+      limpiarFormulario();
+      cambiarTab('mis-recursos');
+      cargarMisRecursos();
+    } else {
+      toast(res.mensaje, 'err');
+    }
+  } catch(e) { toast('Error de conexión', 'err'); }
+
+  btn.disabled = false;
+  btn.textContent = 'Guardar recurso';
+}
+
+function limpiarFormulario() {
+  document.getElementById('f-titulo').value = '';
+  document.getElementById('f-url').value = '';
+  document.getElementById('f-consigna').value = '';
+  document.getElementById('f-pdf').value = '';
+  document.getElementById('f-curso').value = 'Todos';
+  document.getElementById('f-paralelo').value = 'Todos';
+}
+
+// ── EDITAR RECURSO ────────────────────────────────────────────
+function abrirEditar(id) {
+  const r = misRecursos.find(r => r.id == id);
+  if (!r) return;
+  editandoId = id;
+  document.getElementById('edit-id').value      = id;
+  document.getElementById('edit-titulo').value  = r.titulo;
+  document.getElementById('edit-url').value     = r.url;
+  document.getElementById('edit-tipo').value    = r.tipo;
+  document.getElementById('edit-curso').value   = r.curso;
+  document.getElementById('edit-paralelo').value= r.paralelo;
+  document.getElementById('edit-consigna').value= r.consigna || '';
+  document.getElementById('modal-editar').classList.add('abierto');
+}
+
+function cerrarModal() {
+  document.getElementById('modal-editar').classList.remove('abierto');
+}
+
+async function guardarEdicion() {
+  const id       = document.getElementById('edit-id').value;
+  const titulo   = document.getElementById('edit-titulo').value.trim();
+  const url      = document.getElementById('edit-url').value.trim();
+  const tipo     = document.getElementById('edit-tipo').value;
+  const curso    = document.getElementById('edit-curso').value;
+  const paralelo = document.getElementById('edit-paralelo').value;
+  const consigna = document.getElementById('edit-consigna').value.trim();
+
+  if (!titulo || !url) { toast('Título y URL son obligatorios', 'err'); return; }
+
+  try {
+    const res = await api({
+      accion:'editarRecurso', id, titulo, url, tipo, materia:sesion.materia,
+      nivel:sesion.nivel, curso, paralelo, consigna, ...authData()
+    });
+    if (res.ok) {
+      toast('Actualizado ✓', 'ok');
+      cerrarModal();
+      cargarMisRecursos();
+    } else { toast(res.mensaje, 'err'); }
+  } catch(e) { toast('Error de conexión', 'err'); }
+}
+
+async function eliminarRecurso(id) {
+  if (!confirm('¿Eliminar este recurso?')) return;
+  try {
+    const res = await api({accion:'borrarRecurso', id, ...authData()});
+    if (res.ok) { toast('Recurso eliminado', 'ok'); cargarMisRecursos(); }
+    else toast(res.mensaje, 'err');
+  } catch(e) { toast('Error de conexión', 'err'); }
+}
+
+// ── PERFIL ────────────────────────────────────────────────────
+async function actualizarNombre() {
+  const nombre = document.getElementById('inp-nombre-nuevo').value.trim();
+  if (!nombre) { toast('Escribe un nombre', 'err'); return; }
+  try {
+    const res = await api({accion:'editarNombre', nombre, ...authData()});
+    if (res.ok) {
+      sesion.nombre = nombre;
+      document.getElementById('perfil-nombre-actual').textContent = nombre;
+      document.getElementById('ph-nombre').textContent = nombre;
+      toast('Nombre actualizado ✓', 'ok');
+    } else toast(res.mensaje, 'err');
+  } catch(e) { toast('Error de conexión', 'err'); }
+}
+
+// ── ADMIN ─────────────────────────────────────────────────────
+async function cargarTodo() {
+  try {
+    const res = await api({accion:'obtenerTodos', ...authData()});
+    if (res.ok) {
+      renderProfesores(res.profesores);
+      renderAdminRecursos(res.recursos, res.profesores);
+    }
+  } catch(e) { toast('Error al cargar datos', 'err'); }
+}
+
+function renderProfesores(profs) {
+  document.getElementById('contador-profs').textContent = profs.length + ' materias registradas';
+  const cont = document.getElementById('lista-profesores');
+  if (!profs.length) { cont.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><h3>Sin materias</h3></div>'; return; }
+  cont.innerHTML = profs.map(p => `
+    <div class="prof-item">
+      <div class="prof-avatar">${iniciales(p.nombre || p.materia)}</div>
+      <div class="prof-info">
+        <div class="prof-nombre">${p.nombre || 'Sin asignar'}</div>
+        <div class="prof-materia">${p.materia} · ${p.nivel}</div>
+      </div>
+      <div class="prof-cred">
+        <div>${p.usuario}</div>
+        <div>${p.contrasena}</div>
+        <button class="btn-peligro" style="margin-top:4px; padding:4px 8px; font-size:10px;" onclick="toggleProf('${p.usuario}','${p.activo}')">
+          ${p.activo ? 'Desactivar' : 'Activar'}
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderAdminRecursos(recs, profs) {
+  const mapaProf = {};
+  profs.forEach(p => mapaProf[p.usuario] = p.nombre || p.materia);
+  document.getElementById('contador-admin-rec').textContent = recs.length + ' recursos totales';
+  const cont = document.getElementById('lista-admin-recursos');
+  if (!recs.length) { cont.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><h3>Sin recursos</h3></div>'; return; }
+  cont.innerHTML = recs.map(r => `
+    <div class="recurso-item">
+      <div class="recurso-item-top">
+        <span class="recurso-item-titulo">${r.titulo}</span>
+        <button class="btn-peligro" onclick="eliminarAdminRec('${r.id}')">Borrar</button>
+      </div>
+      <div class="recurso-item-meta">
+        <span class="tipo-pill">${r.tipo}</span>
+        <span>${r.materia}</span>
+        <span>${r.nivel}</span>
+        <span>📚 ${r.curso}</span>
+        <span>👥 ${r.paralelo}</span>
+      </div>
+      <p style="font-size:11px; color:var(--texto3); margin-top:4px;">${mapaProf[r.usuario_profesor] || r.usuario_profesor}</p>
+    </div>
+  `).join('');
+}
+
+async function crearMateria() {
+  const materia = document.getElementById('adm-materia').value.trim();
+  const nivel   = document.getElementById('adm-nivel').value;
+  if (!materia) { toast('Escribe el nombre de la materia', 'err'); return; }
+  try {
+    const res = await api({accion:'crearMateria', materia, nivel, ...authData()});
+    if (res.ok) {
+      document.getElementById('nc-usr').textContent  = res.usuario;
+      document.getElementById('nc-pass').textContent = res.contrasena;
+      document.getElementById('nueva-cred').style.display = 'block';
+      document.getElementById('adm-materia').value = '';
+      toast('Materia creada ✓', 'ok');
+      cargarTodo();
+    } else toast(res.mensaje, 'err');
+  } catch(e) { toast('Error de conexión', 'err'); }
+}
+
+async function toggleProf(usuario, activo) {
+  try {
+    const res = await api({accion:'toggleMateria', usuario, ...authData()});
+    if (res.ok) { toast(activo === 'true' ? 'Desactivado' : 'Activado', 'ok'); cargarTodo(); }
+    else toast(res.mensaje, 'err');
+  } catch(e) { toast('Error', 'err'); }
+}
+
+async function eliminarAdminRec(id) {
+  if (!confirm('¿Eliminar este recurso?')) return;
+  try {
+    const res = await api({accion:'borrarRecurso', id, ...authData()});
+    if (res.ok) { toast('Eliminado ✓', 'ok'); cargarTodo(); }
+    else toast(res.mensaje, 'err');
+  } catch(e) { toast('Error', 'err'); }
+}
+
+// ── HELPERS ───────────────────────────────────────────────────
+function authData() {
+  return { usuario:sesion.usuario, contrasena:sesion.contrasena, rol:sesion.rol };
+}
+
+async function api(data) {
+  const res = await fetch(API, {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+function leerBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+function formatFecha(f) {
+  if (!f) return '';
+  const d = new Date(f);
+  if (isNaN(d)) return '';
+  return d.toLocaleDateString('es-BO', {day:'numeric', month:'short'});
+}
+
+function iniciales(nombre) {
+  if (!nombre) return '?';
+  return nombre.split(' ').slice(0,2).map(p => p[0]).join('').toUpperCase();
+}
+
+function mostrarError(msg) {
+  document.getElementById('error-login').textContent = msg;
+}
+
+function toast(msg, tipo) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (tipo || '');
+  setTimeout(() => t.className = 'toast', 2500);
+}
+</script>
+</body>
+</html>
