@@ -617,7 +617,7 @@ function renderGrid() {
 
   window._materias = filtradas;
   grid.innerHTML = filtradas.map((m, i) => `
-    <div class="card ${m.totalRecursos === 0 ? 'card-vacia' : ''}" onclick="${m.totalRecursos > 0 ? 'abrirDetalle('+i+')' : ''}">
+    <div class="card ${m.totalRecursos === 0 ? 'card-vacia' : ''}" style="background:${i % 2 === 0 ? 'var(--blanco)' : '#eef4fb'}" onclick="${m.totalRecursos > 0 ? 'abrirDetalle('+i+')' : ''}">
       <div class="card-header">
         <span class="card-materia">${m.materia}</span>
         <span class="nivel-badge nivel-${m.nivel.toLowerCase()}">${m.nivel}</span>
